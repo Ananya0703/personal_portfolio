@@ -90,9 +90,9 @@ const workProjects = [
     stat: "6+ AI microservices · Production-scale multimodal processing",
     summary:
       "AI Content Intelligence Platform. Built a multimodal AI platform that processes video at scale and generates structured, time-coded intelligence across speech, people, scenes, objects, and other content signals.",
+    tech: ["LLMs", "Computer Vision", "Speech-to-Text", "OCR", "Vector DB", "GPU/CPU"],
     imageLabel: "Multimodal AI diagram",
     imageSrc: "/project-images/comet.png",
-    imageHref: "https://medium.com/%40khayyam.h/why-multimodal-ai-is-harder-to-productionize-than-you-think-f8706483d9e8",
   },
   {
     title: "Subtitling",
@@ -100,6 +100,7 @@ const workProjects = [
     stat: "3,000+ videos subtitled · Broadcast production",
     summary:
       "Automated Multilingual Subtitling. Built an end-to-end speech-to-text and subtitle generation pipeline designed for broadcast content, combining transcription, language-specific processing, and automated quality improvements.",
+    tech: ["Whisper", "NLP", "FFmpeg", "GPU Acceleration"],
     imageLabel: "Subtitling timeline",
     imageSrc: "/project-images/subtitling.png",
   },
@@ -109,6 +110,7 @@ const workProjects = [
     stat: "End-to-end multilingual voice generation",
     summary:
       "Built an automated multilingual voiceover pipeline that takes content from transcription and translation through speaker-aware voice generation.",
+    tech: ["ElevenLabs", "Vertex AI", "OpenAI", "Speaker Diarisation", "LLMs", "Python"],
     imageLabel: "Voiceover pipeline",
     imageSrc: "/project-images/voiceover.png",
   },
@@ -118,6 +120,7 @@ const workProjects = [
     stat: "Automated ad-break recommendations from multimodal signals",
     summary:
       "Built a multimodal system to identify natural ad insertion points by combining signals from speech, audio, and visual transitions.",
+    tech: ["VAD", "Speech-to-Text", "Audio Processing", "Computer Vision", "Python", "FFmpeg"],
     imageLabel: "Ad break signal chart",
     imageSrc: "/project-images/ad-break.png",
   },
@@ -130,6 +133,7 @@ const personalProjects = [
     stat: "Published on PyPI · Designed for 50GB+ datasets",
     summary:
       "GPU-Accelerated Geospatial Data Processing. Built and published an open-source Python package for unpacking and processing large NetCDF geospatial datasets, originally developed as part of my crop-yield prediction capstone.",
+    tech: ["Python", "NetCDF", "NVIDIA RAPIDS", "GPU Acceleration", "Geospatial Data"],
     github: "https://github.com/Ananya0703",
     imageLabel: "NetCDF placeholder",
     imagePlaceholder: true,
@@ -140,6 +144,7 @@ const personalProjects = [
     stat: "End-to-end ML pipeline using large-scale geospatial data",
     summary:
       "Satellite-Based Crop Yield Prediction. Developed a machine-learning pipeline using large-scale satellite, climate, and geospatial data to explore crop-yield prediction.",
+    tech: ["Machine Learning", "Python", "NVIDIA RAPIDS", "LANDSAT", "MODIS", "GridMET", "NetCDF"],
     github: "https://github.com/Ananya0703",
     imageLabel: "Crop-yield map",
     imageSrc: "/project-images/netcdf.png",
@@ -150,6 +155,7 @@ const personalProjects = [
     stat: "Similarity learning using Siamese architecture",
     summary:
       "Built a deep-learning face verification system using Siamese neural networks to learn facial similarity and determine whether two images belong to the same person.",
+    tech: ["Siamese Networks", "Deep Learning", "Computer Vision", "PyTorch / TensorFlow", "OpenCV"],
     github: "https://github.com/Ananya0703",
     imageLabel: "Face verification pipeline",
     imageSrc: "/project-images/face-verification.png",
@@ -186,70 +192,10 @@ function Section({
   );
 }
 
-function ProjectImage({
-  src,
-  label,
-  href,
-  placeholder = false,
-}: {
-  src?: string;
-  label: string;
-  placeholder?: boolean;
-  href?: string;
-}) {
-  const image = (
-    <div className="group relative overflow-hidden rounded-[1.6rem] border border-black/10 bg-[color:var(--paper-2)] aspect-[16/10]">
-      {placeholder ? (
-        <div className="flex h-full flex-col justify-between bg-[linear-gradient(135deg,#f6efe6_0%,#fbfaf7_42%,#e8decf_100%)] p-5">
-          <div className="flex items-center justify-between text-[0.72rem] uppercase tracking-[0.24em] text-black/45">
-            <span>{label}</span>
-            <span>Placeholder</span>
-          </div>
-          <div className="grid gap-3">
-            <div className="h-2.5 w-2/3 rounded-full bg-black/10" />
-            <div className="h-2.5 w-5/6 rounded-full bg-black/8" />
-            <div className="h-2.5 w-1/2 rounded-full bg-black/8" />
-          </div>
-          <div className="flex items-end justify-between gap-3">
-            <div className="h-20 w-20 rounded-2xl border border-black/10 bg-[linear-gradient(135deg,rgba(122,91,47,0.2),rgba(122,91,47,0.05))]" />
-            <div className="text-right text-xs leading-5 text-black/45">
-              Abstract visual
-              <br />
-              for NetCDF tooling
-            </div>
-          </div>
-        </div>
-      ) : (
-        <>
-          <img
-            src={src}
-            alt={label}
-            className="h-full w-full object-cover object-center transition duration-500 group-hover:scale-[1.02]"
-          />
-          <div className="absolute inset-0 ring-1 ring-inset ring-black/5" />
-        </>
-      )}
-      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/28 to-transparent px-4 py-4">
-        <div className="flex items-center justify-between text-[0.7rem] uppercase tracking-[0.24em] text-white/90">
-          <span>{label}</span>
-          <span>{href ? "Read article" : placeholder ? "Placeholder visual" : "Project visual"}</span>
-        </div>
-      </div>
-    </div>
-  );
-
-  return href ? (
-    <a href={href} target="_blank" rel="noreferrer" aria-label={`${label} - open link`}>
-      {image}
-    </a>
-  ) : (
-    image
-  );
-}
-
 function ProjectCard({
   project,
   kind,
+  size = "default",
 }: {
   project: {
     title: string;
@@ -257,57 +203,105 @@ function ProjectCard({
     stat: string;
     summary: string;
     github?: string;
-    imageLabel: string;
-    imageSrc?: string;
-    imagePlaceholder?: boolean;
     imageHref?: string;
+    tech: string[];
   };
   kind: "Work" | "Personal";
+  size?: "default" | "feature";
 }) {
-  const tagClass =
-    kind === "Work"
-      ? "bg-[color:var(--accent-soft)] text-[color:var(--accent)]"
-      : "bg-black/5 text-black/70";
-
+  const shouldReduceMotion = useReducedMotion();
+  const showProjectLink = kind === "Personal" && Boolean(project.github);
   return (
-    <div
-      className="grid gap-5 rounded-[1.8rem] border border-black/8 bg-white/75 p-5 shadow-[0_10px_30px_rgba(15,15,12,0.04)] backdrop-blur-sm sm:p-6 lg:grid-cols-[1.05fr_1.2fr]"
+    <motion.article
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 12 }}
+      whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-10% 0px" }}
+      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={shouldReduceMotion ? undefined : { y: -3 }}
+      className={`group rounded-[1.8rem] border ${
+        kind === "Work" ? "border-black/8 bg-white/80" : "border-black/7 bg-white/65"
+      } p-6 shadow-[0_10px_30px_rgba(15,15,12,0.04)] transition-colors duration-300 hover:border-black/10 sm:p-7`}
     >
-      <ProjectImage
-        src={project.imageSrc}
-        label={project.imageLabel}
-        href={project.imageHref}
-        placeholder={project.imagePlaceholder}
-      />
-      <div className="flex flex-col">
+      <div className="flex h-full flex-col">
         <div className="flex items-start justify-between gap-4">
-          <div>
-            <span className={`inline-flex rounded-full px-3 py-1 text-[0.72rem] font-medium ${tagClass}`}>
-              {kind}
+          <p className="text-[0.72rem] uppercase tracking-[0.22em] text-black/45 transition-colors duration-300 group-hover:text-[color:var(--accent)]">
+            {kind === "Work" ? "Work · @ JioStar" : kind}
+          </p>
+          <span className="text-sm tracking-[0.18em] text-black/48">{project.date}</span>
+        </div>
+        <h3
+          className={`mt-5 font-semibold tracking-tight text-[color:var(--ink)] transition-transform duration-300 group-hover:-translate-y-[1px] ${
+            size === "feature" ? "text-[2rem] sm:text-[2.4rem]" : "text-[1.45rem] sm:text-[1.7rem]"
+          }`}
+        >
+          {project.title}
+        </h3>
+        <p className="mt-3 max-w-2xl text-[1rem] leading-7 text-black/70">{project.summary}</p>
+        <div className="mt-5 flex items-center gap-3">
+          <div className="h-px w-10 bg-[color:var(--accent)] transition-all duration-300 group-hover:w-16" />
+          <span className="text-sm font-medium text-[color:var(--ink)]">{project.stat}</span>
+        </div>
+        <div className="mt-5 flex flex-wrap gap-2">
+          {project.tech.slice(0, 5).map((item) => (
+            <span
+              key={item}
+              className="rounded-full border border-black/8 bg-[color:var(--paper-2)] px-3 py-1.5 text-xs uppercase tracking-[0.18em] text-black/68"
+            >
+              {item}
             </span>
-            <h3 className="mt-4 text-2xl font-semibold tracking-tight text-[color:var(--ink)]">
-              {project.title}
-            </h3>
+          ))}
+        </div>
+        {showProjectLink ? (
+          <div className="mt-auto pt-6">
+            <a
+              href={project.github}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 text-sm uppercase tracking-[0.2em] text-[color:var(--ink)] transition-transform duration-300 group-hover:translate-x-[2px] group-hover:text-[color:var(--accent)]"
+            >
+              View project
+              <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-[2px]">
+                ↗
+              </span>
+            </a>
           </div>
-          <span className="pt-1 text-sm text-black/55">{project.date}</span>
-        </div>
-        <p className="mt-5 text-[1rem] leading-7 text-black/72">{project.summary}</p>
-        <div className="mt-6 rounded-2xl border border-black/8 bg-[color:var(--paper-2)] px-4 py-4">
-          <div className="text-[0.72rem] uppercase tracking-[0.24em] text-black/48">Impact</div>
-          <div className="mt-2 text-lg font-medium text-[color:var(--ink)]">{project.stat}</div>
-        </div>
-        {project.github ? (
-          <a
-            href={project.github}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-5 inline-flex w-fit items-center gap-2 text-sm text-[color:var(--accent)] underline-offset-4 transition hover:underline"
-          >
-            View GitHub
-            <span aria-hidden="true">↗</span>
-          </a>
         ) : null}
       </div>
+    </motion.article>
+  );
+}
+
+function ProjectGrid({
+  projects,
+  kind,
+}: {
+  projects: Array<{
+    title: string;
+    date: string;
+    stat: string;
+    summary: string;
+    github?: string;
+    imageHref?: string;
+    tech: string[];
+  }>;
+  kind: "Work" | "Personal";
+}) {
+  if (kind === "Work") {
+    return (
+      <div className="grid gap-5 md:grid-cols-2">
+        <ProjectCard project={projects[0]} kind={kind} />
+        <ProjectCard project={projects[1]} kind={kind} />
+        <ProjectCard project={projects[2]} kind={kind} />
+        <ProjectCard project={projects[3]} kind={kind} />
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid gap-5 md:grid-cols-2">
+      {projects.map((project) => (
+        <ProjectCard key={project.title} project={project} kind={kind} />
+      ))}
     </div>
   );
 }
@@ -443,30 +437,19 @@ export default function Page() {
                 </h2>
               </div>
               <p className="max-w-xl text-sm leading-6 text-black/55">
-                Work projects show selected production systems I&apos;ve built and contributed to. Personal projects explore ideas I&apos;ve wanted to take further.
+                Work projects show selected production systems I&apos;ve built and contributed to. Personal projects are things I&apos;ve explored because I wanted to take the idea further.
               </p>
             </div>
 
             <div className="mt-10 space-y-12">
               <div>
-                <h3 className="text-sm font-semibold uppercase tracking-[0.24em] text-black/45">
-                  Work
-                </h3>
-                <div className="mt-5 space-y-5">
-                  {workProjects.map((project) => (
-                    <ProjectCard key={project.title} project={project} kind="Work" />
-                  ))}
-                </div>
+                <ProjectGrid projects={workProjects} kind="Work" />
               </div>
               <div>
                 <h3 className="text-sm font-semibold uppercase tracking-[0.24em] text-black/45">
                   Personal Projects
                 </h3>
-                <div className="mt-5 space-y-5">
-                  {personalProjects.map((project) => (
-                    <ProjectCard key={project.title} project={project} kind="Personal" />
-                  ))}
-                </div>
+                <ProjectGrid projects={personalProjects} kind="Personal" />
               </div>
             </div>
           </Section>
