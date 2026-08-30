@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 
 const navItems = [
@@ -348,10 +348,18 @@ export default function Page() {
   const portfolioRef = useRef<HTMLDivElement | null>(null);
   const [isIntroVisible, setIsIntroVisible] = useState(true);
   const [showChrome, setShowChrome] = useState(false);
+  const [showBackToTop, setShowBackToTop] = useState(false);
   const { scrollYProgress } = useScroll();
   const landingOpacity = useTransform(scrollYProgress, [0, 0.12], [1, 0]);
   const landingY = useTransform(scrollYProgress, [0, 0.12], [0, -18]);
   const progressScaleX = useTransform(scrollYProgress, [0, 1], [0, 1]);
+
+  useLayoutEffect(() => {
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, []);
 
   useEffect(() => {
     if (!isIntroVisible) {
@@ -376,6 +384,16 @@ export default function Page() {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
+  }, [isIntroVisible]);
+
+  useEffect(() => {
+    const onScroll = () => {
+      setShowBackToTop(window.scrollY > 560 && !isIntroVisible);
+    };
+
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, [isIntroVisible]);
 
   useEffect(() => {
@@ -409,7 +427,7 @@ export default function Page() {
       />
       <div className="mx-auto max-w-6xl px-5 pb-24 pt-5 sm:px-8 lg:px-10">
         <header
-          className={`sticky top-0 z-20 -mx-5 border-b border-black/5 bg-[color:var(--paper)]/92 px-5 py-4 backdrop-blur-sm transition-all duration-300 sm:-mx-8 sm:px-8 lg:-mx-10 lg:px-10 ${
+          className={`relative z-20 -mx-5 border-b border-black/5 bg-[color:var(--paper)]/92 px-5 py-4 backdrop-blur-sm transition-all duration-300 sm:-mx-8 sm:px-8 lg:-mx-10 lg:px-10 md:sticky md:top-0 ${
             showChrome ? "translate-y-0 opacity-100" : "-translate-y-2 opacity-0 pointer-events-none"
           }`}
         >
@@ -424,13 +442,16 @@ export default function Page() {
                 You&apos;ll usually find me at a laptop, on a yoga mat, or halfway through a book.
               </p>
             </div>
-            <div className="flex flex-wrap items-center gap-3">
-              <nav aria-label="Primary" className="flex flex-wrap gap-1.5">
+            <div className="flex w-full flex-col items-start gap-3 md:w-auto md:flex-row md:items-center">
+              <nav
+                aria-label="Primary"
+                className="grid w-full grid-cols-3 gap-x-2 gap-y-2 md:flex md:w-auto md:flex-wrap md:gap-1.5"
+              >
                 {navItems.map((item) => (
                   <a
                     key={item.href}
                     href={item.href}
-                    className="rounded-full px-3 py-2 text-sm text-black/70 transition hover:bg-black/5 hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)]"
+                    className="rounded-full px-2 py-2 text-center text-sm text-black/70 transition hover:bg-black/5 hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] md:px-3"
                   >
                     {item.label}
                   </a>
@@ -439,7 +460,7 @@ export default function Page() {
               <a
                 href="/resume.pdf"
                 download="ananya_giliyal_resume.pdf"
-                className="inline-flex items-center rounded-full border border-[color:var(--accent)] px-4 py-2 text-sm font-medium text-[color:var(--accent)] transition hover:bg-[color:var(--accent-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)]"
+                className="inline-flex shrink-0 items-center rounded-full border border-[color:var(--accent)] px-4 py-2 text-sm font-medium text-[color:var(--accent)] transition hover:bg-[color:var(--accent-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)]"
               >
                 Resume
               </a>
@@ -466,6 +487,16 @@ export default function Page() {
             ))}
           </div>
         </div>
+
+        <button
+          type="button"
+          onClick={() => window.scrollTo({ top: 0, behavior: shouldReduceMotion ? "auto" : "smooth" })}
+          className={`fixed bottom-4 right-4 z-20 rounded-full border border-black/10 bg-white/85 px-4 py-2 text-xs font-medium uppercase tracking-[0.22em] text-black/65 shadow-[0_10px_24px_rgba(15,15,12,0.08)] backdrop-blur-sm transition-all duration-300 md:hidden ${
+            showBackToTop ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0 pointer-events-none"
+          }`}
+        >
+          ↑
+        </button>
 
         {isIntroVisible ? (
           <motion.section
