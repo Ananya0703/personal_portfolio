@@ -125,6 +125,24 @@ const workProjects = [
     imageLabel: "Ad break signal chart",
     imageSrc: "/project-images/ad-break.png",
   },
+  {
+    title: "Movie Scheduling & FPC Optimization",
+    date: "2025",
+    stat: "100K+ scheduling constraints · Improved movie-library utilization",
+    summary:
+      "Traditional ML and optimization workflow for movie scheduling and GRP maximization across the Colors channel cluster.",
+    tech: [
+      "BARC",
+      "IMDb",
+      "Tree-based Models",
+      "Boosting",
+      "Time-series Features",
+      "IBM CPLEX",
+      "CP Optimizer",
+      "100K+ Constraints",
+      "Movie-library Utilization",
+    ],
+  },
 ];
 
 const personalProjects = [
@@ -247,7 +265,7 @@ function ProjectCard({
           <span className="text-sm font-medium text-[color:var(--ink)]">{project.stat}</span>
         </div>
         <div className="mt-5 flex flex-wrap gap-2">
-          {project.tech.slice(0, 5).map((item) => (
+          {project.tech.map((item) => (
             <span
               key={item}
               className="rounded-full border border-black/8 bg-[color:var(--paper-2)] px-3 py-1.5 text-xs uppercase tracking-[0.18em] text-black/68 transition-[transform,border-color,opacity] duration-200 group-hover:-translate-y-px group-focus-visible:-translate-y-px group-hover:border-black/12 group-focus-visible:border-black/12"
@@ -302,10 +320,9 @@ function ProjectGrid({
   if (kind === "Work") {
     return (
       <div className="grid gap-5 md:grid-cols-2">
-        <ProjectCard project={projects[0]} kind={kind} />
-        <ProjectCard project={projects[1]} kind={kind} />
-        <ProjectCard project={projects[2]} kind={kind} />
-        <ProjectCard project={projects[3]} kind={kind} />
+        {projects.map((project) => (
+          <ProjectCard key={project.title} project={project} kind={kind} />
+        ))}
       </div>
     );
   }
